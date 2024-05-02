@@ -1,0 +1,502 @@
+ #include <iostream>
+#include <stack>
+#include <string>
+
+using namespace std;
+
+// Function to check if a character is an operator
+bool isOperator(char c) {
+    return (c == '+' || c == '-' || c == '*' || c == '/');
+}
+
+// Function to get the precedence of an operator
+int precedence(char op) {
+    if (op == '+' || op == '-')
+        return 1;
+    if (op == '*' || op == '/')
+        return 2;
+    return 0;
+}
+
+// Function to convert infix expression to postfix expression
+string infixToPostfix(string infix) {
+    stack<char> s;
+    string postfix = "";
+
+    for (char& c : infix) {
+        if (isalnum(c)) { // If the character is an operand
+            postfix += c;
+        } else if (c == '(') { // If the character is a left parenthesis
+            s.push(c);
+        } else if (c == ')') { // If the character is a right parenthesis
+            while (!s.empty() && s.top() != '(') {
+                postfix += s.top();
+                s.pop();
+            }
+            if (!s.empty()) {
+                s.pop(); // Pop the left parenthesis
+            }
+        } else { // If the character is an operator
+            while (!s.empty() && precedence(s.top()) >= precedence(c)) {
+                postfix += s.top();
+                s.pop();
+            }
+            s.push(c);
+        }
+    }
+
+    // Pop remaining operators from the stack
+    while (!s.empty()) {
+        postfix += s.top();
+        s.pop();
+    }
+
+    return postfix;
+}
+
+int main() {
+    string infix_expression;
+    cout << "Enter infix expression: ";
+    getline(cin, infix_expression);
+
+    string postfix_expression = infixToPostfix(infix_expression);
+    cout << "Postfix expression: " << postfix_expression << endl;
+
+    return 0;
+}
+ // C++ Program to illustrate how we can use the stack data
+// structure to evaluate the value of a postfix expression
+#include <iostream>
+#include <stack>
+#include <string>
+using namespace std;
+
+// Function to perform an operation based on the operator
+// and return the result
+int performOperation(int operand1, int operand2,
+                     char operation)
+{
+    switch (operation) {
+    case '+':
+        return operand1 + operand2;
+    case '-':
+        return operand1 - operand2;
+    case '*':
+        return operand1 * operand2;
+    case '/':
+        return operand1 / operand2;
+    default:
+        return 0;
+    }
+}
+
+// Function to evaluate the postfix expression
+int evaluatePostfixExpression(const string& expression)
+{
+    stack<int> stack;
+
+    for (char c : expression) {
+        if (isdigit(c)) {
+            // Convert char digit to int and push onto the
+            // stack
+            stack.push(c - '0');
+        }
+        else {
+            // Pop the top two elements for the operation
+            int operand2 = stack.top();
+            stack.pop();
+            int operand1 = stack.top();
+            stack.pop();
+
+            // Perform operation and push the result back
+            // onto the stack
+            int result
+                = performOperation(operand1, operand2, c);
+            stack.push(result);
+        }
+    }
+    // The final result should be the only item left in the
+    // stack
+    return stack.top();
+}
+
+int main()
+{
+
+    string expression2 = "73*4+";
+    int result = evaluatePostfixExpression(expression2);
+    cout << "Result of Postfix Expression \"" << expression2
+         << "\" is: " << result << endl;
+
+    return 0;
+}
+ #include <iostream>
+using namespace std;
+
+#define SIZE 5
+
+class CircularQueue {
+private:
+    int items[SIZE], front, rear;
+
+public:
+    CircularQueue() {
+        front = -1;
+        rear = -1;
+    }
+
+    // Function to check if the queue is full
+    bool isFull() {
+        if (front == 0 && rear == SIZE - 1) {
+            return true;
+        }
+        if (front == rear + 1) {
+            return true;
+        }
+        return false;
+    }
+
+    // Function to check if the queue is empty
+    bool isEmpty() {
+        if (front == -1) {
+            return true;
+        }
+        return false;
+    }
+
+    // Function to insert an element in the circular queue
+    void insert(int element) {
+        if (isFull()) {
+            cout << "Queue is full\n";
+        } else {
+            if (front == -1) {
+                front = 0;
+            }
+            rear = (rear + 1) % SIZE;
+            items[rear] = element;
+            cout << "Inserted " << element << endl;
+        }
+    }
+
+    // Function to delete an element from the circular queue
+    void remove() {
+        int element;
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+        } else {
+            element = items[front];
+            if (front == rear) {
+                front = -1;
+                rear = -1;
+            } else {
+                front = (front + 1) % SIZE;
+            }
+            cout << "Removed " << element << endl;
+        }
+    }
+
+    // Function to display the elements of the circular queue
+    void display() {
+        int i;
+        if (isEmpty()) {
+            cout << "Queue is empty\n";
+        } else {
+            cout << "Front -> ";
+            for (i = front; i != rear; i = (i + 1) % SIZE) {
+                cout << items[i] << " ";
+            }
+            cout << items[i] << " ";
+            cout << " <- Rear\n";
+        }
+    }
+};
+
+int main() {
+    CircularQueue q;
+
+    // Insert elements into the circular queue
+    q.insert(1);
+    q.insert(2);
+    q.insert(3);
+    q.insert(4);
+    q.insert(5);
+
+    // Display elements of the circular queue
+    q.display();
+
+    // Delete element from the circular queue
+    q.remove();
+
+    // Display elements of the circular queue
+    q.display();
+
+    // Insert one more element into the circular queue
+    q.insert(6);
+
+    // Display elements of the circular queue
+    q.display();
+
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+class Node {
+public:
+    int data;
+    Node* next;
+    Node* prev;
+};
+
+class DoublyLinkedList {
+private:
+    Node* head;
+
+public:
+    DoublyLinkedList() {
+        head = nullptr;
+    }
+
+    // Function to create a new node
+    Node* createNode(int value) {
+        Node* newNode = new Node();
+        newNode->data = value;
+        newNode->next = nullptr;
+        newNode->prev = nullptr;
+        return newNode;
+    }
+
+    // Function to insert a node at the beginning of the list
+    void insertAtBeginning(int value) {
+        Node* newNode = createNode(value);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            newNode->next = head;
+            head->prev = newNode;
+            head = newNode;
+        }
+        cout << "Node with value " << value << " inserted at the beginning.\n";
+    }
+
+    // Function to insert a node at the end of the list
+    void insertAtEnd(int value) {
+        Node* newNode = createNode(value);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+            newNode->prev = temp;
+        }
+        cout << "Node with value " << value << " inserted at the end.\n";
+    }
+
+    // Function to delete a node with a given value
+    void deleteNode(int value) {
+        if (head == nullptr) {
+            cout << "List is empty. Deletion failed.\n";
+            return;
+        }
+
+        Node* temp = head;
+        while (temp != nullptr && temp->data != value) {
+            temp = temp->next;
+        }
+
+        if (temp == nullptr) {
+            cout << "Node with value " << value << " not found. Deletion failed.\n";
+            return;
+        }
+
+        if (temp->prev == nullptr && temp->next == nullptr) {
+            // Only one node in the list
+            head = nullptr;
+            delete temp;
+        } else if (temp->prev == nullptr) {
+            // Deleting the first node
+            head = temp->next;
+            head->prev = nullptr;
+            delete temp;
+        } else if (temp->next == nullptr) {
+            // Deleting the last node
+            temp->prev->next = nullptr;
+            delete temp;
+        } else {
+            // Deleting a node in the middle
+            temp->prev->next = temp->next;
+            temp->next->prev = temp->prev;
+            delete temp;
+        }
+
+        cout << "Node with value " << value << " deleted.\n";
+    }
+
+    // Function to display the doubly linked list
+    void display() {
+        if (head == nullptr) {
+            cout << "List is empty.\n";
+            return;
+        }
+
+        Node* temp = head;
+        cout << "Doubly linked list: ";
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+};
+
+int main() {
+    DoublyLinkedList dll;
+
+    dll.insertAtBeginning(1);
+    dll.insertAtEnd(2);
+    dll.insertAtEnd(3);
+    dll.insertAtBeginning(0);
+
+    dll.display();
+
+    dll.deleteNode(2);
+    dll.display();
+
+    dll.deleteNode(0);
+    dll.display();
+
+    dll.deleteNode(4);
+
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+// Definition of a binary tree node
+class TreeNode {
+public:
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// Function to perform in-order traversal of a binary tree
+void inOrderTraversal(TreeNode* root) {
+    if (root == nullptr) {
+        return;
+    }
+
+    inOrderTraversal(root->left); // Visit left subtree
+    cout << root->data << " "; // Visit root
+    inOrderTraversal(root->right); // Visit right subtree
+}
+
+int main() {
+    // Constructing a sample binary tree
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->right->left = new TreeNode(6);
+    root->right->right = new TreeNode(7);
+
+    cout << "In-order traversal: ";
+    inOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
+
+#include <iostream>
+using namespace std;
+
+// Definition of a binary tree node
+class TreeNode {
+public:
+    int data;
+    TreeNode* left;
+    TreeNode* right;
+
+    TreeNode(int value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+// Function to perform pre-order traversal of a binary tree
+void preOrderTraversal(TreeNode* root) {
+    if (root == nullptr) {
+        return;
+    }
+
+    cout << root->data << " "; // Visit root
+    preOrderTraversal(root->left); // Visit left subtree
+    preOrderTraversal(root->right); // Visit right subtree
+}
+
+int main() {
+    // Constructing a sample binary tree
+    TreeNode* root = new TreeNode(1);
+    root->left = new TreeNode(2);
+    root->right = new TreeNode(3);
+    root->left->left = new TreeNode(4);
+    root->left->right = new TreeNode(5);
+    root->right->left = new TreeNode(6);
+    root->right->right = new TreeNode(7);
+
+    cout << "Pre-order traversal: ";
+    preOrderTraversal(root);
+    cout << endl;
+
+    return 0;
+}
+ #include <iostream>
+
+struct Node {
+    int data;
+    Node* left;
+    Node* right;
+
+    Node(int value) {
+        data = value;
+        left = nullptr;
+        right = nullptr;
+    }
+};
+
+void postorderTraversal(Node* root) {
+    if (root == nullptr) {
+        return;
+    }
+    postorderTraversal(root->left);
+    postorderTraversal(root->right);
+    std::cout << root->data << " ";
+}
+
+int main() {
+    // Create a sample binary tree
+    Node* root = new Node(1);
+    root->left = new Node(2);
+    root->right = new Node(3);
+    root->left->left = new Node(4);
+    root->left->right = new Node(5);
+
+    std::cout << "Postorder traversal of the tree is: ";
+    postorderTraversal(root);
+    std::cout << std::endl;
+
+    return 0;
+}
